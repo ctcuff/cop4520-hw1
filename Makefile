@@ -10,6 +10,7 @@ all: $(SRC)
 	$(CC) $(SRC) -o $(OUT_DIR)/$(EXE_NAME) $(ARGS)
 
 run:
+	@ make all
 	@ ./out/primes
 
 clean:
