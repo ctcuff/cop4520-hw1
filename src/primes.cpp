@@ -9,6 +9,8 @@
 #include <iomanip>
 #include <locale>
 #include <sstream>
+#include <cmath>
+#include <array>
 
 #define PRIMES_COUNT 100'000'000
 
@@ -22,48 +24,63 @@ std::string formatNumber(long value)
 }
 
 // Uses the Sieve of Eratosthenes to find all prime numbers up to n.
-// Returns a vector containing those primes.
 // See: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Pseudocode
-std::vector<int> *sieveOfEratosthenes(int n)
+void sieveOfEratosthenes(std::array<bool, PRIMES_COUNT + 1>& primeMap, int end)
 {
-    bool *primeMap = new bool[n + 1];
-
-    std::fill_n(primeMap, n + 1, true);
-
-    for (int i = 2; i * i <= n; i++)
+    long iterations = 0;
+    for (int i = 2; i <= (int)std::sqrt(end); i++)
     {
+        iterations++;
         if (primeMap[i])
         {
-            for (int j = i * i; j <= n; j += i)
+            for (long j = 2; j <= end; j += i)
             {
+                iterations++;
                 primeMap[j] = false;
             }
         }
     }
-
-    std::vector<int> *primes = new std::vector<int>;
-
-    for (int i = 2; i <= n; i++)
-    {
-        if (primeMap[i])
-        {
-            primes->push_back(i);
-        }
-    }
-
-    delete[] primeMap;
-
-    return primes;
 }
 
 int main(void)
 {
     auto start = std::chrono::high_resolution_clock::now();
-    std::vector<int> *primes = sieveOfEratosthenes(PRIMES_COUNT);
+
+    std::array<bool, PRIMES_COUNT + 1> *primeMap = new std::array<bool, PRIMES_COUNT + 1>;
+    std::fill(primeMap->begin(), primeMap->end(), true);
+
+    sieveOfEratosthenes(*primeMap, PRIMES_COUNT);
+
     auto end = std::chrono::high_resolution_clock::now();
 
+    long sum = 0;
+    long primesFound = 0;
+    std::vector<int> lastPrimes;
+
+    for (int i = 2; i < primeMap->size(); i++)
+    {
+        if (primeMap->at(i))
+        {
+            sum += i;
+            primesFound++;
+        }
+    }
+
+    for (int i = primeMap->size() - 1; i >= 0; i--)
+    {
+        if (primeMap->at(i))
+        {
+            lastPrimes.push_back(i);
+        }
+
+        if (lastPrimes.size() == 10) {
+            break;
+        }
+    }
+
+    std::reverse(lastPrimes.begin(), lastPrimes.end());
+
     auto duration = std::chrono::duration<double, std::milli>(end - start);
-    long sum = std::accumulate(primes->begin(), primes->end(), 0L);
 
     try
     {
@@ -72,14 +89,14 @@ int main(void)
         file.open(filePath);
 
         file << "Execution time: " << duration.count() << "ms" << std::endl;
-        file << "Primes found: " << formatNumber(primes->size()) << std::endl;
+        file << "Primes found: " << formatNumber(primesFound) << std::endl;
         file << "Sum: " << formatNumber(sum) << std::endl;
         file << "Top ten primes:" << std::endl;
 
-        std::for_each(primes->end() - 10, primes->end(), [&](int n)
+        for (int n : lastPrimes)
         {
             file << formatNumber(n) << std::endl;
-        });
+        }
 
         file.close();
 
@@ -90,7 +107,7 @@ int main(void)
         std::cout << "Error writing results to file: " << err.what() << std::endl;
     }
 
-    delete primes;
+    delete primeMap;
 
     return 0;
 }

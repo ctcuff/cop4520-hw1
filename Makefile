@@ -1,4 +1,4 @@
-CC = g++ -std=c++17
+CXX = g++ -std=c++17
 
 SRC = src/primes.cpp
 ARGS = -Wall
@@ -7,7 +7,7 @@ OUT_DIR = ./out
 
 all: $(SRC)
 	@ mkdir -p out
-	$(CC) $(SRC) -o $(OUT_DIR)/$(EXE_NAME) $(ARGS)
+	$(CXX) $(SRC) -o $(OUT_DIR)/$(EXE_NAME) $(ARGS)
 
 run:
 	@ make all
