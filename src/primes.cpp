@@ -19,7 +19,18 @@ template <class T>
 std::string formatNumber(T value)
 {
     std::stringstream stream;
-    stream.imbue(std::locale("en_US.UTF-8"));
+
+    try
+    {
+        // Setting the locale may not work on all systems.
+        // If it doesn't, we'll just return the number as
+        // a string instead
+        stream.imbue(std::locale(""));
+    }
+    catch (...)
+    {
+    }
+
     stream << std::fixed << std::setprecision(2) << value;
     return stream.str();
 }
@@ -64,8 +75,8 @@ int main()
 
     auto end = std::chrono::high_resolution_clock::now();
 
-    long sum = 0;
-    long primesFound = 0;
+    long long sum = 0;
+    long long primesFound = 0;
     std::vector<int> lastPrimes;
 
     for (size_t i = 2; i < primeMap->size(); i++)
@@ -98,6 +109,7 @@ int main()
     {
         std::string filePath = "./out/primes.txt";
         std::ofstream file;
+
         file.open(filePath);
 
         file << "Execution time: " << formatNumber(duration.count()) << "ms" << std::endl;
