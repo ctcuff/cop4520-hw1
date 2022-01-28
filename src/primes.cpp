@@ -43,9 +43,9 @@ void sieveOfEratosthenes(std::array<bool, PRIMES_COUNT + 1> &primeMap, int start
     }
 }
 
-int main(void)
+int main()
 {
-    std::array<bool, PRIMES_COUNT + 1> *primeMap = new std::array<bool, PRIMES_COUNT + 1>;
+    auto *primeMap = new std::array<bool, PRIMES_COUNT + 1>;
     std::fill(primeMap->begin(), primeMap->end(), true);
     std::thread threads[THREAD_COUNT];
 
