@@ -53,10 +53,11 @@ int main(void)
 
     for (int i = 0; i < THREAD_COUNT; i++)
     {
+        // Offsetting by 2 since we don't need to check if 0 or 1 is prime
         threads[i] = std::thread(sieveOfEratosthenes, std::ref(*primeMap), i + 2);
     }
 
-    for (std::thread &thread : threads)
+    for (auto &thread : threads)
     {
         thread.join();
     }
@@ -100,14 +101,13 @@ int main(void)
         file.open(filePath);
 
         file << "Execution time: " << formatNumber(duration.count()) << "ms" << std::endl;
-
         file << "Primes found: " << formatNumber(primesFound) << std::endl;
         file << "Sum: " << formatNumber(sum) << std::endl;
         file << "Top ten primes:" << std::endl;
 
-        for (int n : lastPrimes)
+        for (auto prime : lastPrimes)
         {
-            file << formatNumber(n) << std::endl;
+            file << formatNumber(prime) << std::endl;
         }
 
         file.close();
