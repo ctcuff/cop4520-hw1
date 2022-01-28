@@ -14,4 +14,4 @@ run:
 	@ ./out/primes
 
 clean:
-	@ rm -r ./out
+	@ rm -rf ./out
