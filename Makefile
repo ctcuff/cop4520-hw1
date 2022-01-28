@@ -1,7 +1,7 @@
 CXX = g++ -std=c++17
 
 SRC = src/primes.cpp
-ARGS = -Wall
+ARGS = -Wall -lpthread
 EXE_NAME = primes
 OUT_DIR = ./out
 
