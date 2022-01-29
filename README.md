@@ -37,7 +37,7 @@ In order to apply this to a multi-threaded environment, we can create some numbe
 By doing so, we can split up the workload fairly evenly between any number of threads. The Sieve of Eratosthenes has a runtime of [O(n log log n)](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#:~:text=The%20time%20complexity%20of%20calculating%20all%20primes%20below%20n%20in%20the%20random%20access%20machine%20model%20is%20O(n%20log%20log%20n)%20operations%2C%20a%20direct%20consequence%20of%20the%20fact%20that%20the%20prime%20harmonic%20series%20asymptotically%20approaches%20log%20log%20n.) so we could say that the multi-threaded approach is O((n log log n) / T), where T is the number of threads used.
 
 ## An Analysis of the Code
-In order to find all primes, we first need to create an array capable of keeping track of what numbers are prime. To do so, a boolean array of size `N + 1` (where `N` is the number of primes) is created with all values initially initialized to true. The Sieve algorithm (as described above), will mark all numbers that aren't prime as false. After the it runs, any values in the boolean array that are still true are marked as false.
+In order to find all primes, we first need to create an array capable of keeping track of what numbers are prime. To do so, a boolean array of size `N + 1` (where `N` is the number of primes) is created with all values initially initialized to true. The Sieve algorithm (as described above), will mark all numbers that aren't prime as false. After it's finished, any values that are marked as true in the array are prime.
 
 The following shows the time it takes to find all prime numbers up to 100,000,000 based on the number of threads (each trial was run 5 times with the lowest value taken from each):
 
@@ -52,4 +52,4 @@ The following shows the time it takes to find all prime numbers up to 100,000,00
 | 7            | 426.19ms
 | 8            | 381.21ms
 
-**IMPORTANT** : This code creates a large boolean array first and starts a timer afterwards. Because this array is only created once and is accessed across threads, I'm not including it in the execution time. It should be noted however that leaving this process out increases the runtime by ~130ms.
+**IMPORTANT**: This code creates a large boolean array first and starts a timer afterwards. Because this array is only created once and is accessed across threads, I'm not including it in the execution time. It should be noted however that leaving this process out increases the runtime for 8 threads by ~130ms.
